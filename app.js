@@ -33,32 +33,32 @@ app.post("/register", async (request, response) => {
     if (password.length >= 5) {
       const data = `insert into user values('${username}','${name}','${hashedPassword}','${gender}','${location}');`;
       await db.run(data);
-      response.status = 200;
+      response.status(200);
       response.send("User created successfully");
     } else {
-      response.status = 400;
+      response.status(400);
       response.send("Password is too short");
     }
   } else {
-    response.status = 400;
+    response.status(400);
     response.send("User already exists");
   }
 });
 
 app.post("/login", async (request, response) => {
   const { username, password } = request.body;
-  const query = `select * from user where username = ${username};`;
+  const query = `select * from user where username = '${username}';`;
   const user = await db.get(query);
   if (user === undefined) {
-    response.status = 400;
+    response.status(400);
     response.send("Invalid user");
   } else {
     const isPasswordMatched = await bcrypt.compare(password, user.password);
     if (isPasswordMatched) {
-      response.status = 200;
+      response.status(200);
       response.send("Login success!");
     } else {
-      response.status = 400;
+      response.status(400);
       response.send("Invalid password");
     }
   }
